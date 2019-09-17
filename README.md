@@ -1,5 +1,5 @@
 ## The homework for digital image processing course
-This project include five homeworks for digital image processing course. The code is written with C++ and Opencv. The environment setup and the implements of each homework will be introduced below.
+This project include five homeworks for digital image processing course. The code is written with C++ and OpenCV. The environment setup and the implements of each homework will be introduced below.
 
 ### Environment setup
 Install OpenCV on ubuntu. The following example installs OpenCV with the docker image. So first you have to install docker.
@@ -12,8 +12,8 @@ docker --version
 
 Second, create a file named **dockerfile** in the root path. Paste the following illustration to the **dockerfile**.
 
-    FROM ubuntu:18.04
-	RUN sudo apt-get update && apt-get install -y \	
+	FROM ubuntu:18.04
+	RUN apt-get update && apt-get install -y \	
 		build-essential \
 		cmake \
 		vim \
@@ -24,7 +24,7 @@ Second, create a file named **dockerfile** in the root path. Paste the following
 Third, build a new image with the dockerfile. This image is built based on ubuntu:18.04.
 
 ```bash
-docker build --rm=true -t OpenCV.
+docker build --rm=true -t opencv .
 ```
 
 Fourth, allows everybody to use your host x server.
@@ -33,11 +33,10 @@ Fourth, allows everybody to use your host x server.
 xhost +local:root
 ```
 
-Fifth, run the image with [GUI](http://wiki.ros.org/docker/Tutorials/GUI) and execute the bash.
+Fifth, run the image that allows the [GUI](http://wiki.ros.org/docker/Tutorials/GUI).
 
 ```bash
-docker run -it --rm=true --name HW_DIP -e DISPLAY=$DISPLAY -v="/tmp/.X11-unix:/tmp/.X11-unix:rw" -d OpenCV:latest
-docker exec -it HW_DIP bash
+docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix opencv:latest
 ```
 
 Finally, install the OpenCV package in the docker.
@@ -47,9 +46,13 @@ apt-get install -y libopencv-dev
 ```
 
 ### Homework 1
-Implement two image transformation method ,nearest-neighbor interpolation and bilinear interpolation, to transform the scale of picture.
+Implement two image transformation method ,nearest-neighbor interpolation and bilinear interpolation, to resize the image with double scale.
+![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-1.jpg)
+![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-2.jpg)
+![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-3.jpg)
 
 ### Homework 2
+Implement image warping with bilinear interpolation to turn the picture positive.
 
 ### Homework 3
 
