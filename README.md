@@ -1,6 +1,14 @@
 ## The homework for digital image processing course
 This project include five homeworks for digital image processing course. The code is written with C++ and OpenCV. The environment setup and the implements of each homework will be introduced below.
 
+- [Environment setup](#Environment-setup)
+- [Homework 1](#Homework-1)
+- [Homework 2](#Homework-2)
+- [Homework 3](#Homework-3)
+- [Homework 4](#Homework-4)
+- [Homework 5](#Homework-5)
+
+
 ### Environment setup
 Install OpenCV on ubuntu. The following example installs OpenCV with the docker image. So first you have to install docker.
 
@@ -55,7 +63,13 @@ Example:
 | Original picture | Nearest neighbor interpolation | Bilinear interpolation |
 
 ### Homework 2
-Implement image warping with bilinear interpolation to turn the picture positive.
+Implement image warping with bilinear interpolation to turn the picture into positive.
+
+Example:
+
+|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg?raw=true)|
+|---|---|
+| Original picture | Wrapping picture |
 
 ### Homework 3
 
