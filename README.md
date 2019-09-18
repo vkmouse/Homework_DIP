@@ -47,9 +47,12 @@ apt-get install -y libopencv-dev
 
 ### Homework 1
 Implement two image transformation method ,nearest-neighbor interpolation and bilinear interpolation, to resize the image with double scale.
-![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-1.jpg)
-![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-2.jpg)
-![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-3.jpg)
+
+Example:
+
+|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-2.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-3.jpg?raw=true)|
+|---|---|:---:|
+| Original picture | Nearest neighbor interpolation | Bilinear interpolation |
 
 ### Homework 2
 Implement image warping with bilinear interpolation to turn the picture positive.
