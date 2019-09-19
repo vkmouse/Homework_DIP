@@ -67,7 +67,7 @@ Implement image warping with bilinear interpolation to turn the picture into pos
 
 Example:
 
-|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg?raw=true)|
+|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg)|
 |---|---|
 | Original picture | Wrapping picture |
 

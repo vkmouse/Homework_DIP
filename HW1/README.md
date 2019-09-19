@@ -1,3 +1,7 @@
+- [實作方式](#實作方式)
+- [編譯和執行](#編譯和執行)
+- [結果與討論](#結果與討論)
+
 ### 實作方法
 本次作業實作影像轉換，如圖1所示，整體流程共有四個部分，第一個步驟是先將準備好的影像讀入程式中，第二步驟是輸入一個要轉換的比例，而作業中限定為將原圖放大為10倍，第三個步驟則是分別用兩種插值法補放大後缺失的數值，這兩種插值法分別為最近鄰居 (Nearest Neighbor Interpolation) 與雙線性插值法 (Bilinear Interpolation)，最後顯示出插值後的圖片。
 
@@ -10,6 +14,12 @@
 |![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW1-5.svg)|
 |:---:|
 | 圖2 影像轉換概念 |
+
+### 編譯和執行
+編譯方式
+	g++ main.cpp -o output 'pkg-config --libs opencv'
+執行時需帶有一個參數，輸入的圖片路徑，例如輸入影像檔名為 pic.jpg 執行以下命令
+	./output pic1.jpg
 
 ### 結果與討論
 
