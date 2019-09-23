@@ -78,7 +78,7 @@ Example:
 
 |<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW3-1.jpg" width="177" height="266" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW3-2.jpg" width="177" height="266" />|
 |---|---|
-| Original picture | After image sharping |
+| Original picture | After image sharpening |
 
 ### Homework 4
 
