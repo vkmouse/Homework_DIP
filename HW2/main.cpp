@@ -33,8 +33,8 @@ Mat image_wrap_by_eight_params(Mat ori_img, Point src[], Point dst[])
 		u[i] = dst[i].x;
 		v[i] = dst[i].y;
 	}
-	double new_cols = std::max(u[2], u[3]) - std::min(u[0], u[1]);
-	double new_rows = std::max(v[2], v[3]) - std::min(v[0], v[1]);
+	int new_cols = std::max(u[2], u[3]) - std::min(u[0], u[1]);
+	int new_rows = std::max(v[2], v[3]) - std::min(v[0], v[1]);
 	Mat img = Mat(new_rows, new_cols, CV_8UC1);
 
 	// AX = B -> X = A-1*B

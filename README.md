@@ -63,15 +63,22 @@ Example:
 | Original picture | Nearest neighbor interpolation | Bilinear interpolation |
 
 ### Homework 2
-Implement image warping with bilinear interpolation to turn the picture into positive.
+Implement image registration with bilinear interpolation to turn the picture into positive.
 
 Example:
 
-|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg)|
+|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg" width="232" height="366" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg" width="223" height="278" />|
 |---|---|
-| Original picture | Wrapping picture |
+| Original picture | After image registration |
 
 ### Homework 3
+Sharpen an image with unsharp masking. Unsharp masking can enhance the edge instead of noise compared to high-pass filters.
+
+Example: 
+
+|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW3-1.jpg" width="177" height="266" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW3-2.jpg" width="177" height="266" />|
+|---|---|
+| Original picture | After image sharping |
 
 ### Homework 4
 

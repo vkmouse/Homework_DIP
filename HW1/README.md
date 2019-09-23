@@ -20,7 +20,7 @@
 
 	g++ main.cpp -o output 'pkg-config --libs opencv'
 	
-執行時需帶有一個參數，輸入的圖片路徑，例如輸入影像檔名為 pic.jpg 執行以下命令
+執行時需帶有一個參數，輸入的圖片路徑，例如輸入影像檔名為 pic1.jpg 執行以下命令
 
 	./output pic1.jpg
 

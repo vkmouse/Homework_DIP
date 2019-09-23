@@ -3,7 +3,7 @@
 - [結果與討論](#結果與討論)
 
 ### 實作方法
-本次作業實作影像轉換，將影像執行變形，如圖1所示，整體流程共有五個部分，第一個步驟是先將準備好的影像讀入程式中，第二步驟是輸入四個位置，這些位置是要變形成為矩形的位置。第三個步驟是計算八參數的數值，第四步驟則是雙線性插值法 (Bilinear Interpolation) 插值，最後顯示出插值後的圖片。
+本次作業實作影像定位，將影像執行變形，如圖1所示，整體流程共有五個部分，第一個步驟是先將準備好的影像讀入程式中，第二步驟是輸入四個位置，這些位置是要變形成為矩形的位置。第三個步驟是計算八參數的數值，第四步驟則是雙線性插值法 (Bilinear Interpolation) 插值，最後顯示出插值後的圖片。
 
 |![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-3.svg)|
 |:---:|
@@ -21,13 +21,12 @@
 
 	g++ main.cpp -o output 'pkg-config --libs opencv'
 	
-執行時需帶有一個參數，輸入的圖片路徑，例如輸入影像檔名為 pic.jpg 執行以下命令
+執行時需帶有一個參數，輸入的圖片路徑，例如輸入影像檔名為 pic1.jpg 執行以下命令
 
 	./output pic1.jpg
 
 ### 結果與討論
 
-
-|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg?raw=true)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg)|
+|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-1.jpg" width="232" height="366" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW2-2.jpg" width="223" height="278" />|
 |---|---|
-| Original picture | Wrapping picture |
+| Original picture | After image registration |
