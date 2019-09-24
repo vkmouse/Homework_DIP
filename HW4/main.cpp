@@ -7,13 +7,13 @@
 
 using namespace cv;
 
-Mat adding_noise(Mat image, double noise_prob);
-Mat execute_mean_filter(Mat image, Size size);
-Mat execute_median_filter(Mat image, Size size);
-Mat execute_alpha_trimmed_mean_filter(Mat image, Size size, int d);
+Mat adding_noise(const Mat src_img, double prob);
+Mat execute_mean_filter(const Mat src_img, Size size);
+Mat execute_median_filter(const Mat src_img, Size size);
+Mat execute_alpha_trimmed_mean_filter(const Mat src_img, Size size, int d);
 
-int main(int argc, char** argv) {
-
+int main(int argc, char **argv)
+{
 	double noise_prob = 0.1;
 	Mat ori_img, noise_img, mean_img, median_img, alpha_img;
 
@@ -23,133 +23,151 @@ int main(int argc, char** argv) {
 	median_img = execute_median_filter(noise_img, Size(3, 3));
 	alpha_img = execute_alpha_trimmed_mean_filter(noise_img, Size(3, 3), 6);
 
-	//namedWindow("Original Image", WINDOW_AUTOSIZE);
-	//namedWindow("Noise Image", WINDOW_AUTOSIZE);
-	//namedWindow("After Mean Filter Image", WINDOW_AUTOSIZE);
-	//namedWindow("After Median Filter Image", WINDOW_AUTOSIZE);
-	//namedWindow("After Alpha-trimmed Mean Filter Image", WINDOW_AUTOSIZE);
-
-	//imshow("Original Image", ori_img);
-	//imshow("Noise Image", noise_img);
-	//imshow("After Mean Filter Image", mean_img);
-	//imshow("After Median Filter Image", median_img);
-	//imshow("After Alpha-trimmed Mean Filter Image", alpha_img);
-
-	imwrite("Noise Image.jpg", noise_img);
-	imwrite("After Mean Filter Image.jpg", mean_img);
-	imwrite("After Median Filter Image.jpg", median_img);
-	imwrite("After Alpha-trimmed Mean Filter Image.jpg", alpha_img);
-
-	// imwrite("ori_img.jpg", ori_img);
+	imshow("Original Image", ori_img);
+	imshow("Noise Image", noise_img);
+	imshow("After Mean Filter Image", mean_img);
+	imshow("After Median Filter Image", median_img);
+	imshow("After Alpha-trimmed Mean Filter Image", alpha_img);
 	waitKey(0);
-	system("pause");
-	return 0;
 
+	return 0;
 }
-Mat adding_noise(Mat image, double noise_prob)
+Mat adding_noise(const Mat src_img, double prob)
 {
 	std::default_random_engine G(std::chrono::high_resolution_clock::now().time_since_epoch().count()); // generater
-	std::uniform_real_distribution<double> U(0.0, 1.0); // uniform
-	std::normal_distribution<double> N(0.0, 10.0); // normal
-	image = image.clone();
-	int count1 = 0, count2 = 0;
+	std::uniform_real_distribution<double> U(0.0, 1.0);													// uniform
+	std::normal_distribution<double> N(0.0, 10.0);														// normal
+	Mat dst_img = src_img.clone();
+	int rows = dst_img.rows;
+	int cols = dst_img.cols;
+	uchar *dst_ptr;
 
-	for (int x = 0; x < image.cols; x++)
-		for (int y = 0; y < image.rows; y++)
+	for (int y = 0; y < rows; y++)
+	{
+		dst_ptr = dst_img.ptr<uchar>(y);
+		for (int x = 0; x < cols; x++)
 		{
-			double r = U(G);
-			int pixel = image.at<uchar>(y, x);
-			if (r <= noise_prob)
-			{
-				// impluse noise
-				if (r < noise_prob * 0.5)
-					pixel = 0;
-				else
-					pixel = 255;
-			}
-			if (noise_prob < r && r <= noise_prob * 2)
-			{
-				// gaussian noise
-				pixel = pixel + N(G);
-				if (pixel > 255)
-					pixel = 255;
-				else if (pixel < 0)
-					pixel = 0;
-			}
-			image.at<uchar>(y, x) = pixel;
+			double r = U(G); // r is a random number between 0 to 1.
+			if (r < prob)	// impluse noise
+				dst_ptr[x] = (uchar)floor(2 * (prob - r) / prob) * 255;
+			else if (prob <= r && r < prob * 2) // gaussian noise
+				dst_ptr[x] = (uchar)max(0, min((int)(dst_ptr[x] + N(G)), 255));
 		}
+	}
 
-	return image;
+	return dst_img;
 }
-Mat execute_mean_filter(Mat image, Size size)
+Mat execute_mean_filter(const Mat src_img, Size size)
 {
-	image = image.clone();
-	for (int x = 0; x < image.cols; x++)
-		for (int y = 0; y < image.rows; y++)
+	Mat dst_img = src_img.clone();
+	Point anchor = Point(size.width / 2, size.height / 2); // floor(x/2)
+	int rows = dst_img.rows;
+	int cols = dst_img.cols;
+	const uchar *src_ptr = src_img.ptr<uchar>(0);
+	uchar *dst_ptr;
+
+	for (int y = 0; y < rows; y++)
+	{
+		dst_ptr = dst_img.ptr<uchar>(y);
+		for (int x = 0; x < cols; x++)
 		{
 			double pixel = 0.0;
 			int count = 0;
-			for (int m = 0; m < size.width; m++) // x 軸
-				for (int n = 0; n < size.height; n++) // y 軸
+			for (int v = 0; v < size.height; v++)
+			{
+				int _y = y + v - anchor.y; // y + y' - anchor.y
+				if (_y < 0 || rows <= _y)
+					continue;
+				for (int u = 0; u < size.width; u++)
 				{
-					int _x = x - 1 + m;
-					int _y = y - 1 + n;
-					if ((0 <= _x && _x < image.cols) && (0 <= _y && _y < image.rows))
-					{
-						pixel += image.at<uchar>(_y, _x);
-						count++;
-					}
+					int _x = x + u - anchor.x; // x + x' - anchor.x
+					if (_x < 0 || cols <= _x)
+						continue;
+					pixel += src_ptr[_x + _y * cols];
+					count++;
 				}
-			pixel = pixel / count;
-			if (pixel > 255) pixel = 255;
-			else if (pixel < 0) pixel = 0;
-			image.at<uchar>(y, x) = (uchar)pixel;
+			}
+			dst_ptr[x] = (uchar)(max(0, min((int)(pixel / count), 255)));
 		}
-	return image;
+	}
+	return dst_img;
 }
-Mat execute_median_filter(Mat image, Size size)
+Mat execute_median_filter(const Mat src_img, Size size)
 {
-	image = image.clone();
-	for (int x = 0; x < image.cols; x++)
-		for (int y = 0; y < image.rows; y++)
+	Mat dst_img = src_img.clone();
+	Point anchor = Point(size.width / 2, size.height / 2); // floor(x/2)
+	int rows = dst_img.rows;
+	int cols = dst_img.cols;
+	const uchar *src_ptr = src_img.ptr<uchar>(0);
+	uchar *dst_ptr;
+
+	for (int y = 0; y < rows; y++)
+	{
+		dst_ptr = dst_img.ptr<uchar>(y);
+		for (int x = 0; x < cols; x++)
 		{
 			std::vector<int> vec;
-			for (int m = 0; m < size.width; m++) // x 軸
-				for (int n = 0; n < size.height; n++) // y 軸
+			for (int v = 0; v < size.height; v++)
+			{
+				int _y = y + v - anchor.y; // y + y' - anchor.y
+				if (_y < 0 || rows <= _y)
+					continue;
+				for (int u = 0; u < size.width; u++)
 				{
-					int _x = x - 1 + m;
-					int _y = y - 1 + n;
-					if ((0 <= _x && _x < image.cols) && (0 <= _y && _y < image.rows))
-						vec.push_back(image.at<uchar>(_y, _x));
+					int _x = x + u - anchor.x; // x + x' - anchor.x
+					if (_x < 0 || cols <= _x)
+						continue;
+					vec.push_back(src_ptr[_x + _y * cols]);
 				}
+			}
 			std::sort(vec.begin(), vec.end());
-			int pixel = vec[vec.size() / 2];
-			if (vec.size() % 2 == 0)
-				pixel = (vec[vec.size() / 2 - 1] + vec[vec.size() / 2]) / 2;
-			image.at<uchar>(y, x) = (uchar)pixel;
+			if (vec.size() % 2 == 1)
+				dst_ptr[x] = (uchar)vec[vec.size() / 2];
+			else
+				dst_ptr[x] = (uchar)(vec[vec.size() / 2] + vec[vec.size() / 2 - 1]) / 2;
 		}
-	return image;
+	}
+	return dst_img;
 }
-Mat execute_alpha_trimmed_mean_filter(Mat image, Size size, int d)
+Mat execute_alpha_trimmed_mean_filter(const Mat src_img, Size size, int d)
 {
-	image = image.clone();
-	for (int x = 0; x < image.cols; x++)
-		for (int y = 0; y < image.rows; y++)
+	Mat dst_img = src_img.clone();
+	Point anchor = Point(size.width / 2, size.height / 2); // floor(x/2)
+	int rows = dst_img.rows;
+	int cols = dst_img.cols;
+	const uchar *src_ptr = src_img.ptr<uchar>(0);
+	uchar *dst_ptr;
+
+	for (int y = 0; y < rows; y++)
+	{
+		dst_ptr = dst_img.ptr<uchar>(y);
+		for (int x = 0; x < cols; x++)
 		{
-			std::vector<int> vec(size.width * size.height);
-			for (int m = 0; m < size.width; m++) // x 軸
-				for (int n = 0; n < size.height; n++) // y 軸
+			std::vector<int> vec;
+			for (int v = 0; v < size.height; v++)
+			{
+				int _y = y + v - anchor.y; // y + y' - anchor.y
+				if (_y < 0 || rows <= _y)
+					continue;
+				for (int u = 0; u < size.width; u++)
 				{
-					int _x = x - 1 + m;
-					int _y = y - 1 + n;
-					if ((0 <= _x && _x < image.cols) && (0 <= _y && _y < image.rows))
-						vec[m * size.height + n] = image.at<uchar>(_y, _x);
+					int _x = x + u - anchor.x; // x + x' - anchor.x
+					if (_x < 0 || cols <= _x)
+						continue;
+					vec.push_back(src_ptr[_x + _y * cols]);
 				}
+			}
 			std::sort(vec.begin(), vec.end());
-			vec.erase(vec.end() - d / 2, vec.end());
-			vec.erase(vec.begin(), vec.begin() + d / 2);
-			int pixel = std::accumulate(vec.begin(), vec.end(), 0.0) / vec.size();
-			image.at<uchar>(y, x) = (uchar)pixel;
+			for (int m = d; m >= 0; m = m - 2)
+				if (vec.size() > m)
+				{
+					vec.erase(vec.end() - m / 2, vec.end());
+					vec.erase(vec.begin(), vec.begin() + m / 2);
+					int pixel = std::accumulate(vec.begin(), vec.end(), 0.0) / vec.size();
+					dst_ptr[x] = (uchar)pixel;
+					break;
+				}
 		}
-	return image;
+	}
+	return dst_img;
 }
