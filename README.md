@@ -81,6 +81,13 @@ Example:
 | Original picture | After image sharpening |
 
 ### Homework 4
+Adding Gaussian noise and salt-and-pepper noise to the image. And then denoise the image using mean filter, median filter, and alpha-trimmed filter.
+
+Example:
+
+|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW4-1.jpg" width="160" height="160" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW4-2.jpg" width="160" height="160" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW4-3.jpg" width="160" height="160" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW4-4.jpg" width="160" height="160" />|<img src="https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW4-5.jpg" width="160" height="160" />|
+|:---:|:---:|:---:|:---:|:---:|
+| Original picture | Noisy picture | Mean filter | Median Filter | Alpha-trimmed filter |
 
 ### Homework 5
 
