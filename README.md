@@ -90,4 +90,8 @@ Example:
 | Original picture | Noisy picture | Mean filter | Median Filter | Alpha-trimmed filter |
 
 ### Homework 5
+Implement the morphological hole filling.
 
+|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW5-1.jpg)|![](https://github.com/vkmouse/Homework_DIP/blob/master/figure/HW5-2.jpg)|
+|---|---|
+| Original picture | After hole filling |

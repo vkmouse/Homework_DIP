@@ -5,71 +5,93 @@
 
 using namespace cv;
 
-void onMouse(int Event, int x, int y, int flags, void* param);
-Mat region_filling(Mat image, int fill_x, int fill_y);
-Mat binary_image(Mat image, int threshold);
+void onMouse(int Event, int x, int y, int flags, void *param);
+Mat hole_filling(Mat src_img, Point pos);
+Mat binary_image(Mat src_img, int threshold);
 
 Mat image;
 int count;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
 	count = 0;
 	image = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
 	image = binary_image(image, 100);
-	
+
 	namedWindow("origin", WINDOW_AUTOSIZE);
 	setMouseCallback("origin", onMouse, NULL);
 	imshow("origin", image);
 	waitKey(0);
 	return 0;
 }
-Mat region_filling(Mat image, int fill_x, int fill_y)
+
+Mat hole_filling(Mat src_img, Point pos)
 {
-	image = image.clone();
-	std::vector<Point> new_active_point;
+	Mat dst_img = src_img.clone();
+	int rows = src_img.rows;
+	int cols = src_img.cols;
+	std::vector<Point> new_active_point(1, pos);
 	Mat component = (Mat_<bool>(3, 3) << 0, 1, 0,
-										 1, 1, 1,
-										 0, 1, 0);
-	new_active_point.push_back(Point(fill_x, fill_y));
+					 1, 1, 1,
+					 0, 1, 0);
+	bool *c_ptr = component.ptr<bool>(0);
+	uchar *dst_ptr = dst_img.ptr<uchar>(0);
+	dst_img.at<uchar>(pos.y, pos.x) = 255;
 
 	while (new_active_point.size() != 0)
 	{
 		int x = new_active_point.front().x;
 		int y = new_active_point.front().y;
-		image.at<uchar>(y, x) = 255;
-		for (int m = 0; m < component.cols; m++) // x 軸
-			for (int n = 0; n < component.rows; n++) // y 軸
+
+		for (int v = 0; v < 3; v++)
+		{
+			int _y = y + v - 1; // anchor.y is 1
+			if (_y < 0 || rows <= _y)
+				continue;
+			for (int u = 0; u < 3; u++)
 			{
-				int _x = x - 1 + m;
-				int _y = y - 1 + n;
-				if ((0 <= _x && _x < image.cols) && (0 <= _y && _y < image.rows))
-					if (component.at<bool>(n, m) && image.at<uchar>(_y, _x) / 255 == 0)
-					{
-						image.at<uchar>(_y, _x) = 255;
-						new_active_point.push_back(Point(_x, _y));
-					}
+				int _x = x + u - 1; // anchor.x is 1
+				if (_x < 0 || cols <= _x)
+					continue;
+
+				if (c_ptr[v * 3 + u] && dst_ptr[_y * cols + _x] < 255)
+				{
+					dst_ptr[_y * cols + _x] = 255;
+					new_active_point.push_back(Point(_x, _y));
+				}
 			}
+		}
 		new_active_point.erase(new_active_point.begin());
 	}
 
-	return image;
+	return dst_img;
 }
-Mat binary_image(Mat image, int threshold)
+Mat binary_image(Mat src_img, int threshold)
 {
-	image = image.clone();
-	for (int x = 0; x < image.cols; x++)
-		for (int y = 0; y < image.rows; y++)
+	int cols = src_img.cols;
+	int rows = src_img.rows;
+	Mat dst_img = Mat(rows, cols, CV_8UC1);
+	uchar *src_ptr, *dst_ptr;
+
+	for (int y = 0; y < rows; y++)
+	{
+		src_ptr = src_img.ptr<uchar>(y);
+		dst_ptr = dst_img.ptr<uchar>(y);
+		for (int x = 0; x < cols; x++)
 		{
-			if (image.at<uchar>(y, x) > 100)
-				image.at<uchar>(y, x) = 255;
+			if (src_ptr[x] > threshold)
+				dst_ptr[x] = 255;
 			else
-				image.at<uchar>(y, x) = 0;
+				dst_ptr[x] = 0;
 		}
-	return image;
+	}
+	return dst_img;
 }
-void onMouse(int Event, int x, int y, int flags, void* param) {
-	if (Event == CV_EVENT_LBUTTONDOWN) {
-		image = region_filling(image, x, y);
+void onMouse(int Event, int x, int y, int flags, void *param)
+{
+	if (Event == CV_EVENT_LBUTTONDOWN)
+	{
+		image = hole_filling(image, Point(x, y));
 		imshow("origin", image);
 		// output
 		char fn[256];
